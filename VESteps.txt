@@ -1,0 +1,19 @@
+Create and Use a Virtual Environment
+
+	python -m venv myenv
+
+Activate the virtual environment:
+	myenv\Scripts\activate
+
+
+Install dependencies:
+	pip install -r requirements.txt
+
+
+If you add or update libraries, remember to regenerate the requirements.txt file and commit the changes:
+
+
+pip freeze > requirements.txt
+git add requirements.txt
+git commit -m "Update requirements.txt"
+git push
