@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getPosts, createPost, deletePost } from '../services/api';
+import PostCard from './PostCard';
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
@@ -25,28 +26,18 @@ const Posts = () => {
     return (
         <div>
             <h1>Posts</h1>
-            <ul>
-            {posts.map(post => (
-                <li key={post.id}>
-                    {post.title}
-                    <button onClick={() => onDelete(post.id)}>Delete</button>
-                </li>
-            ))}
-        </ul>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={newPost.title}
-                    onChange={e => setNewPost({ ...newPost, title: e.target.value })}
-                    placeholder="Title"
-                />
-                <textarea
-                    value={newPost.content}
-                    onChange={e => setNewPost({ ...newPost, content: e.target.value })}
-                    placeholder="Content"
-                />
-                <button type="submit">Create Post</button>
-            </form>
+            <div className="row row-cols-1 row-cols-md-4 g-4">
+                {posts.map(post => (
+                    <PostCard
+                        key={post.id}
+                        title={post.title}
+                        content={post.content}
+                        createdAt={post.created_at}
+                        onDelete={() => onDelete(post.id)}
+                    />
+                ))}
+            </div>
+            
         </div>
     );
 };
