@@ -4,19 +4,13 @@ import PostCard from './PostCard';
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
-    const [newPost, setNewPost] = useState({ title: '', content: '' });
+    // const [newPost, setNewPost] = useState({ title: '', content: '' });
 
     useEffect(() => {
         getPosts().then(response => setPosts(response.data));
     }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        createPost(newPost).then(response => {
-            setPosts([...posts, response.data]);
-            setNewPost({ title: '', content: '' });
-        });
-    };
+   
 
     const onDelete = async (id) => {
         await deletePost(id);
@@ -30,10 +24,14 @@ const Posts = () => {
                 {posts.map(post => (
                     <PostCard
                         key={post.id}
+                        id={post.id}
                         title={post.title}
                         content={post.content}
                         createdAt={post.created_at}
                         onDelete={() => onDelete(post.id)}
+                        likes={post.likes}
+                        comment_no={post.comments ? post.comments.length : 0}
+
                     />
                 ))}
             </div>

@@ -4,7 +4,7 @@ import { createPost } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 const CreatePost = () => {
-    const [newPost, setNewPost] = useState({ title: '', content: '' });
+    const [newPost, setNewPost] = useState({ title: '', content: '',likes:0,comments:[] });
     const navigate = useNavigate();
     
     const handleSubmit = async (e) => {
