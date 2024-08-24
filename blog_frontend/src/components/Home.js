@@ -1,5 +1,5 @@
 import React, { useEffect, useState,useContext } from 'react';
-import { getPosts, deletePost } from '../services/api';
+import { getPosts,getUsers, deletePost } from '../services/api';
 import PostCard from './PostCard';
 import AuthContext from '../services/AuthContext';
 import { Carousel } from 'react-bootstrap';
@@ -11,6 +11,7 @@ const Posts = () => {
 
     useEffect(() => {
         getPosts().then(response => setPosts(response.data));
+        getUsers().then(response=>console.log(response))
     }, []);
 
    
