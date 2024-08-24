@@ -1,6 +1,6 @@
-import React,{useContext} from 'react';
+import React, { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { User } from 'lucide-react';
+import { User, Search } from 'lucide-react';  // Import the Search icon
 import styled from 'styled-components';
 import AuthContext from '../services/AuthContext';
 
@@ -33,6 +33,7 @@ const NavbarWrapper = styled.nav`
 
     .auth-buttons {
         display: flex;
+        align-items: center;
         gap: 15px;
     }
 
@@ -49,6 +50,39 @@ const NavbarWrapper = styled.nav`
     .btn:hover {
         background-color: #555; /* Slightly lighter grey on hover */
     }
+
+    .dropdown-menu {
+        background-color: #333; /* Dark grey background */
+    }
+
+    .dropdown-item {
+        color: #ccc; /* Light grey text */
+    }
+
+    .dropdown-item:hover {
+        background-color: #555; /* Slightly lighter grey on hover */
+        color: #fff; /* White text */
+    }
+
+    .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-container input {
+        padding: 5px 30px 5px 10px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        background-color: #222; /* Dark background for input */
+        color: #fff; /* White text */
+    }
+
+    .search-container .search-icon {
+        position: absolute;
+        right: 10px;
+        color: #fff; /* White icon */
+    }
 `;
 
 const Navbar = () => {
@@ -56,7 +90,7 @@ const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
 
     return (
-        <NavbarWrapper className="navbar navbar-expand-lg">
+        <NavbarWrapper className="navbar navbar-expand-lg fixed-top">
             <div className="container-fluid">
                 <Link className="navbar-brand" to="/">MyBlog</Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,19 +104,46 @@ const Navbar = () => {
                         <li className="nav-item">
                             <Link className={`nav-link ${location.pathname === '/create' ? 'active' : ''}`} to="/create">Create Post</Link>
                         </li>
+                        {/* Dropdown for Categories */}
+                        <li className="nav-item dropdown">
+                            <Link 
+                                className="nav-link dropdown-toggle" 
+                                to="#" 
+                                id="categoryDropdown" 
+                                role="button" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false"
+                            >
+                                Categories
+                            </Link>
+                            <ul className="dropdown-menu" aria-labelledby="categoryDropdown">
+                                <li><Link className="dropdown-item" to="/category/food">Food</Link></li>
+                                <li><Link className="dropdown-item" to="/category/travel">Travel</Link></li>
+                                <li><Link className="dropdown-item" to="/category/fashion">Fashion</Link></li>
+                                <li><Link className="dropdown-item" to="/category/news">News</Link></li>
+                                <li><Link className="dropdown-item" to="/category/other">Other</Link></li>
+                            </ul>
+                        </li>
                     </ul>
 
                     <div className="auth-buttons">
-                        {!user ? (<>
-                            <Link className="btn" to="/login">Login</Link>
-                            <Link className="btn" to="/register">Sign up</Link>
-                        </>):(<>
-                            <Link to="/profile">
-                            <User className="profile-icon" />
-                        </Link>
-                        <Link className="btn"  onClick={logout}>Logout</Link>
-                        </>)}
-                        
+                        <div className="search-container">
+                            <input type="text" placeholder="Search..." />
+                            <Search className="search-icon" size={18} />
+                        </div>
+                        {!user ? (
+                            <>
+                                <Link className="btn" to="/login">Login</Link>
+                                <Link className="btn" to="/register">Sign up</Link>
+                            </>
+                        ) : (
+                            <>
+                                <Link to="/profile">
+                                    <User className="profile-icon" />
+                                </Link>
+                                <button className="btn" onClick={logout}>Logout</button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
