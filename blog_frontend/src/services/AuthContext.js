@@ -7,12 +7,45 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
+        fetchUser();
+    }, []);
+
+    const fetchUser = async () => {
         const token = localStorage.getItem('accessToken');
         if (token) {
-            const decodedToken = jwtDecode(token);
-            setUser(decodedToken);
+            try {
+                const decodedToken = jwtDecode(token);
+                const response = await axios.get(`http://127.0.0.1:8000/api/user/${decodedToken.user_id}/`, {
+                    // headers: { Authorization: Bearer ${token} }
+                });
+                return response.data; // Return user data
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                localStorage.removeItem('accessToken');
+                throw error; // Propagate error
+            }
         }
-    }, []);
+        return null; // Return null if no token
+    };
+
+    const toggleFollow = async (userId, currentUserId) => {
+        try {
+            const response = await axios.post(
+                'http://localhost:8000/api/toggle-follow/', // Update with your actual API URL
+                { user_id: userId, following_user_id: currentUserId },
+                {
+                    headers: {
+                        // 'Authorization': Bearer ${authToken},
+                        'Content-Type': 'application/json',
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error('Error toggling follow:', error.response?.data || error.message);
+            throw error; // Re-throw or handle error as needed
+        }
+    };
 
     const login = async (username, password) => {
         try {
@@ -20,11 +53,14 @@ export const AuthProvider = ({ children }) => {
             const { access } = response.data;
             localStorage.setItem('accessToken', access);
             const decodedToken = jwtDecode(access);
-            setUser(decodedToken);
+            const userResponse = await axios.get(`http://127.0.0.1:8000/api/user/${decodedToken.user_id}/`, {
+                // headers: { Authorization: `Bearer ${access}` }
+            });
+            setUser(userResponse.data);
         } catch (error) {
-            console.error(error);
-        }
-    };
+            console.error('Login failed:', error);
+        }
+    };
 
     const logout = () => {
         localStorage.removeItem('accessToken');
@@ -41,8 +77,20 @@ export const AuthProvider = ({ children }) => {
     };
 
 
+    // Method to fetch follow counts
+    const fetchFollowCounts = async (userId) => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/get-follow-counts/${userId}/`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching follow counts:', error.response?.data || error.message);
+            throw error; // Handle error as needed
+        }
+    };
+
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, register }}>
+        <AuthContext.Provider value={{ user, login, logout, register,fetchUser,toggleFollow,fetchFollowCounts }}>
             {children}
         </AuthContext.Provider>
     );

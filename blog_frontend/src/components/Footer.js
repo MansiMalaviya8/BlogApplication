@@ -57,7 +57,7 @@ const FooterWrapper = styled.footer`
 
 const Footer = () => {
     return (
-        <FooterWrapper>
+        <FooterWrapper >
             <div className="container">
                 <div className="social-icons">
                     <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">

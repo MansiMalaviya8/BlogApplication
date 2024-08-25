@@ -14,3 +14,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_following_count(self, obj):
         return obj.get_following_count()
+    
+
+from rest_framework import serializers
+from .models import FollowersKeys
+
+class FollowersKeysSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FollowersKeys
+        fields = ['user_id', 'following_user_id']

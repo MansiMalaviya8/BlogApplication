@@ -2,24 +2,15 @@ import React, { useEffect, useState,useContext } from 'react';
 import { getPosts,getUsers, deletePost } from '../services/api';
 import PostCard from './PostCard';
 import AuthContext from '../services/AuthContext';
+import  PostContext  from '../services/PostContext';
 import { Carousel } from 'react-bootstrap';
 
 const Posts = () => {
-    const [posts, setPosts] = useState([]);
-    // const [newPost, setNewPost] = useState({ title: '', content: '' });
     const { user } = useContext(AuthContext);
-
-    useEffect(() => {
-        getPosts().then(response => setPosts(response.data));
-        getUsers().then(response=>console.log(response))
-    }, []);
+    const {posts,loading}=useContext(PostContext)
 
    
-
-    const onDelete = async (id) => {
-        await deletePost(id);
-        setPosts(posts.filter(post => post.id !== id));
-    };
+    if (loading) return <div>Loading...</div>
 
     return (
         <div>
@@ -87,8 +78,8 @@ const Posts = () => {
                     <PostCard
                         key={post.id}
                         post={post}
-                        currentUser={user}
-                        onDelete={onDelete}
+                        
+                        
                     />
                 ))}
             </div>

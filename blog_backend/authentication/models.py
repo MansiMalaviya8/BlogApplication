@@ -17,3 +17,15 @@ class UserProfile(models.Model):
 
     def get_following_count(self):
         return self.following_profiles.count()
+    
+
+
+class FollowersKeys(models.Model):
+    user_id = models.ForeignKey(UserProfile, related_name='following_relationships', on_delete=models.CASCADE)
+    following_user_id = models.ForeignKey(UserProfile, related_name='followers_relationships', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user_id', 'following_user_id')
+
+    def _str_(self):
+        return f'{self.user_id.username} follows {self.following_user_id.username}'
