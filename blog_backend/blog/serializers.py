@@ -5,7 +5,7 @@ from authentication.models import UserProfile
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ['id', 'username']  # Adjust fields as necessary
+        fields = ['id', 'username','post_no']  # Adjust fields as necessary
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserProfileSerializer()  # Nested serializer for the user

@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import action,api_view
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer, UserProfileSerializer
+from authentication.serializers import UserProfileSerializer as AuthUserProfileSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-# from django.shortcuts import get_object_or_404
-# from django.contrib.auth import get_user_model
 from authentication.models import *
 from rest_framework.parsers import MultiPartParser,FormParser
+from django.db.models import Q
 
 class PostCreateView(APIView):
     parser_classes = [MultiPartParser, FormParser]
@@ -28,7 +28,7 @@ class PostCreateView(APIView):
         request.data['created_by'] = user.id
         
         user.post_no+=1
-        userserializer=UserProfileSerializer(data=user)
+        userserializer=AuthUserProfileSerializer(data=user)
 
         if userserializer.is_valid():
             userserializer.save()
@@ -93,14 +93,76 @@ def like_post(request):
     post.likes.add(user)
     return Response({'message': 'Post liked successfully'}, status=status.HTTP_200_OK)
 
-class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+@api_view(['POST'])
+def add_comment(request):
+    """
+    Add a comment to a specific post based on user_id and post_id provided in the request data.
+    """
+    user_id = request.data.get('user_id')
+    post_id = request.data.get('post_id')
+    content = request.data.get('content')
 
-    def perform_create(self, serializer):
-        post_id = self.request.data.get('post')
-        if post_id:
-            post = Post.objects.get(id=post_id)
-            serializer.save(user=self.request.user, post=post)
-        else:
-            raise ValueError("Post ID is required to create a comment")
+    try:
+        user = UserProfile.objects.get(id=user_id)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Create and save the comment
+    comment = Comment(user=user, post=post, content=content)
+    comment.save()
+
+    # Serialize the comment and return the response
+    serializer = CommentSerializer(comment)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET'])
+def get_comments(request, post_id):
+    """
+    Get all comments for a specific post.
+    """
+    try:
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    comments = Comment.objects.filter(post_id=post.id)
+    serializer = CommentSerializer(comments, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def search_view(request):
+    query = request.GET.get('q', '')
+
+    if not query:
+        return Response({"error": "Search query parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Search in Post model
+    posts = Post.objects.filter(
+        Q(title__icontains=query) |
+        Q(content__icontains=query) |
+        Q(category__icontains=query) 
+    )
+
+    # Search in UserProfile model
+    users = UserProfile.objects.filter(
+        Q(username__icontains=query) |
+        Q(email__icontains=query)   
+    )
+
+    # Serialize results
+    post_serializer = PostSerializer(posts, many=True)
+    user_serializer = AuthUserProfileSerializer(users, many=True)
+
+    # Combine results
+    results = {
+        'posts': post_serializer.data,
+        'users': user_serializer.data
+    }
+
+    return Response(results, status=status.HTTP_200_OK)

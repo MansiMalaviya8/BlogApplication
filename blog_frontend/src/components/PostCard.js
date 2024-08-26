@@ -10,9 +10,6 @@ const PostCard = ({ post }) => {
     const {user,toggleFollow,fetchUser}=useContext(AuthContext)
     const navigate = useNavigate();
 
-
-   
-
     const handleFollow = async () => {
         try {
             // Assuming currentUserId is available in your component
@@ -28,7 +25,11 @@ const PostCard = ({ post }) => {
         };
 
     const handlePost = async () => {
-        navigate(`/posts/${post.id}`)    
+        if(user){
+        navigate(`/posts/${post.id}`) }
+        else{
+            navigate('/login')
+        }   
     };
 
 

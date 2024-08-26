@@ -5,21 +5,19 @@ import { Facebook, Twitter, Instagram } from 'lucide-react';
 const FooterWrapper = styled.footer`
     background-color: #000;
     color: #fff;
-    padding: 20px 0;
+    padding: 5px 0;
 
     .container {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
         text-align: center;
-        
+        flex-wrap: wrap; /* Allows wrapping on smaller screens */
     }
 
     .social-icons {
         display: flex;
         gap: 15px;
-        margin-bottom: 15px;
     }
 
     .social-icons a {
@@ -35,7 +33,6 @@ const FooterWrapper = styled.footer`
     .nav-links {
         display: flex;
         gap: 20px;
-        margin-bottom: 15px;
     }
 
     .nav-links a {
@@ -51,13 +48,12 @@ const FooterWrapper = styled.footer`
 
     .copyright {
         font-size: 0.9rem;
-        margin-top: 15px;
     }
 `;
 
 const Footer = () => {
     return (
-        <FooterWrapper >
+        <FooterWrapper className='fixed-bottom'>
             <div className="container">
                 <div className="social-icons">
                     <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
@@ -71,7 +67,6 @@ const Footer = () => {
                     </a>
                 </div>
                 <div className="nav-links">
-                    <a href="/">Home</a>
                     <a href="/about">About</a>
                     <a href="/contact">Contact</a>
                     <a href="/privacy">Privacy Policy</a>

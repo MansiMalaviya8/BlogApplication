@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PostContext from '../services/PostContext';
 import AuthContext from '../services/AuthContext';
@@ -37,8 +37,14 @@ const CreatePost = () => {
         } catch (error) {
             console.error('Error creating post:', error);
             alert('Error creating post');
-        }
+        }
     };
+
+    useEffect(() => {
+        if(!user){
+            navigate('/login')
+        }
+    },[user]);
 
     return (
         <div className="container mt-5 pt-5 mb-5">

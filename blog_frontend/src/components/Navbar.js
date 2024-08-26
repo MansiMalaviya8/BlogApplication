@@ -3,6 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { User, Search } from "lucide-react"; // Import the Search icon
 import styled from "styled-components";
 import AuthContext from "../services/AuthContext";
+import PostContext from "../services/PostContext";
+
 import { useNavigate } from "react-router-dom";
 
 const NavbarWrapper = styled.nav`
@@ -88,32 +90,25 @@ const NavbarWrapper = styled.nav`
 `;
 
 const Navbar = () => {
+  const { logout, fetchUser } = useContext(AuthContext);
+  const navigation = useNavigate();
   const location = useLocation();
-  const { user,logout, fetchUser } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const [userProfile, setUserProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
+  const user = localStorage.getItem("accessToken");
 
-  const handlelogout = () => {
-    logout();
-    setUserProfile(null)
-    navigate("/");
-  };
+  const [query, setQuery] = useState("");
+  const { searchPosts, searchResults, loading } = useContext(PostContext);
 
   useEffect(() => {
-    // Simulate checking authentication state on load
-    setLoading(false);
-    fetchUser().then((response)=>{
-        setUserProfile(response)
-    })
-  }, [user]);
+    if (query.length > 2) {
+        navigation(`/search?q=${query}`);
+    }
+}, [query,navigation]);
 
-    
-
-  if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
+  const handleLogout = async () => {
+    await logout();
+    await navigation("/");
+  };
 
   return (
     <NavbarWrapper className="navbar navbar-expand-lg fixed-top">
@@ -198,10 +193,15 @@ const Navbar = () => {
 
           <div className="auth-buttons">
             <div className="search-container">
-              <input type="text" placeholder="Search..." />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
               <Search className="search-icon" size={18} />
             </div>
-            {!userProfile ? (
+            {!user ? (
               <>
                 <Link className="btn" to="/login">
                   Login
@@ -216,7 +216,7 @@ const Navbar = () => {
                   <User className="profile-icon" />
                 </Link>
 
-                <button className="btn" onClick={handlelogout}>
+                <button className="btn" onClick={handleLogout}>
                   Logout
                 </button>
               </>
