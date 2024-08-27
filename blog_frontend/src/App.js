@@ -8,6 +8,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Post from "./components/Post";
+import  User  from "./components/User";
 import SearchResults from './components/SearchResults'
 import { AuthProvider } from "./services/AuthContext";
 import { PostProvider } from "./services/PostContext";
@@ -27,6 +28,8 @@ const App = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/posts/:postId" element={<Post />} />
+              <Route path="/users/:userId" element={<User />} />
+
               <Route path="/search" element={<SearchResults />} />
 
             </Routes>

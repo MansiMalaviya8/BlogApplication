@@ -42,7 +42,7 @@ class PostCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PostListView(generics.ListAPIView):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by('-created_at')
     serializer_class =PostSerializer
 
 class PostDetailView(generics.RetrieveAPIView):
@@ -50,18 +50,7 @@ class PostDetailView(generics.RetrieveAPIView):
     serializer_class = PostSerializer
     lookup_field = 'id'  # or use a different field if needed
 
-# class CreatePostView(APIView):
-#     permission_classes = [IsAuthenticated]  # Ensure that the user is authenticated
 
-#     def post(self, request, *args, **kwargs):
-#         data = request.data.copy()
-#         data['created_by'] = request.user.id  # Automatically set the creator of the post
-#         serializer = PostSerializer(data=data)
-        
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -130,7 +119,7 @@ def get_comments(request, post_id):
     except Post.DoesNotExist:
         return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
     
-    comments = Comment.objects.filter(post_id=post.id)
+    comments = Comment.objects.filter(post_id=post.id).order_by('-created_at')
     serializer = CommentSerializer(comments, many=True)
     return Response(serializer.data)
 
@@ -166,3 +155,28 @@ def search_view(request):
     }
 
     return Response(results, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def exclude_post_view(request, user_id):
+    try:
+        # Fetch all posts and order them by newest first
+        queryset = Post.objects.all().order_by('-created_at')
+        
+        # Exclude posts created by the given user_id
+        queryset = queryset.exclude(created_by=user_id)
+        
+        # Process the queryset to include full URLs for post_photo
+        data = []
+        for post in queryset:
+            post_data = PostSerializer(post).data
+            if post.post_photo:
+                # Build the absolute URL for post_photo
+                post_data['post_photo'] = request.build_absolute_uri(post.post_photo.url)
+            data.append(post_data)
+        
+        # Return the processed data as a response
+        return Response(data, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

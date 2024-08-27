@@ -99,11 +99,11 @@ const Navbar = () => {
   const [query, setQuery] = useState("");
   const { searchPosts, searchResults, loading } = useContext(PostContext);
 
-  useEffect(() => {
-    if (query.length > 2) {
-        navigation(`/search?q=${query}`);
-    }
-}, [query,navigation]);
+//   useEffect(() => {
+//     if (query.length > 2) {
+//         navigation(`/search?q=${query}`);
+//     }
+// }, [query,navigation]);
 
   const handleLogout = async () => {
     await logout();

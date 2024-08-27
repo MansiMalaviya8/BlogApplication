@@ -7,7 +7,7 @@ class UserProfile(models.Model):
     password = models.CharField(max_length=128, default='')
     post_no = models.IntegerField(default=0)
     followers = models.ManyToManyField('self', symmetrical=False, related_name='following_profiles', blank=True)
-    profile_photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
+    profile_photo = models.ImageField(upload_to='profile_photos/',blank=True, null=True)
 
     def _str_(self):
         return self.username

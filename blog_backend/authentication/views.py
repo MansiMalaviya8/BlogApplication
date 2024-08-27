@@ -1,7 +1,7 @@
 # authentication/views.py
 from rest_framework import viewsets,generics
 from .models import FollowersKeys, UserProfile
-from rest_framework.decorators import action,api_view
+from rest_framework.decorators import action,api_view,parser_classes
 from .serializers import FollowersKeysSerializer, UserProfileSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -92,6 +92,7 @@ class RegisterView(APIView):
         email = data.get('email')
         password = data.get('password')
         
+        
         if not username or not email or not password:
             return Response({'error': 'Username, email, and password are required'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -129,3 +130,39 @@ def get_follow_counts(request, user_id):
         'follower_count': follower_count,
         'following_count': following_count
     }, status=status.HTTP_200_OK)
+
+
+# @api_view(['PUT'])
+# def user_profile_view(request, user_id):
+#     try:
+#         user_profile = UserProfile.objects.get(id=user_id)
+
+#         serializer = UserProfileSerializer(user_profile, data=request.data.get('profile_photo'), partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     except UserProfile.DoesNotExist:
+#         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+from rest_framework.parsers import MultiPartParser
+
+@api_view(['PUT'])
+@parser_classes([MultiPartParser])
+def user_profile_view(request, user_id):
+    try:
+        user_profile = UserProfile.objects.get(id=user_id)
+
+        # Combine both data and files to pass to the serializer
+        data = request.data
+        data['profile_photo'] = request.FILES.get('profile_photo')
+
+        serializer = UserProfileSerializer(user_profile, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except UserProfile.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+       

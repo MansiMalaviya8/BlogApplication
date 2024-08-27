@@ -7,9 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        fetchUser()
-    }, []);
+    
 
     const isAuthenticated = () => {
         const token=localStorage.getItem('accessToken');
@@ -36,6 +34,16 @@ export const AuthProvider = ({ children }) => {
         return null; // Return null if no token
     };
 
+    const fetchUserById = async (id) => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/users/${id}/`);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching post by ID:', error);
+            throw new Error('Error fetching post by ID');
+        }
+    };
+
     const login = async (username, password) => {
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/login/', { username, password });
@@ -56,7 +64,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (username, email, password) => {
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/register/', { username, email, password });
+            const response = await axios.post('http://127.0.0.1:8000/api/register/', { username, email, password});
             return response.data;
         } catch (error) {
             console.error('Registration failed:', error);
@@ -84,8 +92,30 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const editProfile = async (profilePhoto, id) => {
+        if (!profilePhoto) {
+            alert("Please select a photo to upload");
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append('profile_photo', profilePhoto);
+    
+        try {
+            const response = await axios.put(`http://localhost:8000/api/user-profile/${id}/`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('Profile photo uploaded successfully:', response.data);
+        } catch (error) {
+            console.error('Error uploading profile photo:', error);
+        }
+    };
+    
+
     return (
-        <AuthContext.Provider value={{user, fetchUser, isAuthenticated,login, logout, register, toggleFollow, fetchFollowCounts }}>
+        <AuthContext.Provider value={{user, fetchUser, isAuthenticated,login, logout, register, toggleFollow, fetchFollowCounts,editProfile,fetchUserById }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,34 +1,49 @@
-import React, { useEffect, useState,useContext } from 'react';
-import { getPosts,getUsers, deletePost } from '../services/api';
-import PostCard from './PostCard';
+import React, { useEffect, useState, useContext } from 'react';
+import { Carousel, Pagination } from 'react-bootstrap';
 import AuthContext from '../services/AuthContext';
-import  PostContext  from '../services/PostContext';
-import { Carousel } from 'react-bootstrap';
+import PostContext from '../services/PostContext';
+import PostCard from './PostCard';
 
 const Posts = () => {
-    const { user } = useContext(AuthContext);
-    const {fetchPosts,loading,searchResults}=useContext(PostContext)
+    const { fetchUser} = useContext(AuthContext);
+    const { fetchHomePosts, loading, searchResults } = useContext(PostContext);
 
     const [posts, setPosts] = useState([]);
+   
 
     useEffect(() => {
         const loadPosts = async () => {
             try {
-                const fetchedPosts = await fetchPosts();
-                setPosts(fetchedPosts);
+                const user=await fetchUser()
+                const  results  = await fetchHomePosts(user.id);
+                setPosts(results);
+                
+                // setTotalPages(total_pages);
             } catch (error) {
                 console.error("Failed to fetch posts", error);
             }
         };
         loadPosts();
-    }, [fetchPosts]);
+    }, []);
 
-    if (loading) return <div>Loading...</div>;
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 3;
+
+    // Calculate total number of pages
+    const totalPages = Math.ceil(posts.length / postsPerPage);
+
+    // Calculate the posts to display for the current page
+    const currentPosts = posts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        if (pageNumber >= 1 && pageNumber <= totalPages) {
+            setCurrentPage(pageNumber);
+        }
+    };
 
     return (
         <div>
-            
-
             <Carousel style={{ marginTop: '75px' }}>
                 <Carousel.Item>
                     <img
@@ -88,49 +103,39 @@ const Posts = () => {
             </Carousel>
 
             {loading && <p>Loading...</p>}
-            <div>
-            {searchResults.posts.length > 0 && (
-                    <>
-                        <h2>Posts</h2>
-                        {searchResults.posts.map(post => (
-                            <div key={post.id}>
-                                <h3>{post.title}</h3>
-                                <p>{post.content}</p>
-                            </div>
-                        ))}
-                    </>
-            )}
-            
-            {searchResults.users.length > 0 && (
-                    <>
-                        <h2>Users</h2>
-                        {searchResults.users.map(user => (
-                            <div key={user.id}>
-                                <h3>{user.username}</h3>
-                                <p>{user.email}</p>
-                            </div>
-                        ))}
-                    </>
-                )}
-
-                {/* Display message if no results found */}
-                {searchResults.posts.length === 0 && searchResults.users.length === 0 && (
-                    <p>No results found.</p>
-                )}
-            </div>
-            
 
             <h1>Posts</h1>
-            <div className="row row-cols-1 row-cols-md-4 g-4">
-                {posts.map(post => (
+            <div className="posts-list row row-cols-1 row-cols-md-4 g-4">
+                {/* Render current posts */}
+                {currentPosts.map(post => (
                     <PostCard
-                        key={post.id}
-                        post={post} 
-                    />
+                    key={post.id}
+                    post={post} 
+                />
+
                 ))}
             </div>
 
-            
+            <Pagination className="justify-content-center mt-4 mb-5">
+                <Pagination.Prev
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                />
+                {[...Array(totalPages).keys()].map(number => (
+                    <Pagination.Item
+                        key={number + 1}
+                        active={number + 1 === currentPage}
+                        onClick={() => handlePageChange(number + 1)}
+                    >
+                        {number + 1}
+                    </Pagination.Item>
+                ))}
+                <Pagination.Next
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                />
+            </Pagination>
+
         </div>
     );
 };
