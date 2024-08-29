@@ -19,10 +19,13 @@ const Posts = () => {
         let results = [];
         if (user) {
         results = await fetchHomePosts(user.id);
+        setPosts(Array.isArray(results) ? results: []);
+
         } else {
         results = await fetchPosts();
+        console.log(results.results)
+        setPosts(Array.isArray(results.results) ? results.results: []);
         }
-        setPosts(Array.isArray(results) ? results: []);
         
       } catch (error) {
         // setTotalPages(total_pages);
