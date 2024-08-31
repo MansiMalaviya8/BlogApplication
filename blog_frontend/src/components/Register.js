@@ -1,6 +1,9 @@
 // src/components/Register.js
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { fetchUser, register } from '../services/AuthAPI'; // Import the fetchUser function
+import { useNavigate } from 'react-router-dom';
+
 import AuthContext from '../services/AuthContext';
 
 const Signup = () => {
@@ -10,6 +13,8 @@ const Signup = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
+
 
     const handleRegister = async () => {
         if (password !== confirmPassword) {
@@ -23,7 +28,23 @@ const Signup = () => {
             setMessage(error.message);
         }
     };
+    useEffect(() => {
+        // Check if user is already logged in
+        const checkUserLoggedIn = async () => {
+            try {
+                const user = await fetchUser();
+                if (user) {
+                    // User is logged in, redirect to home
+                    navigate('/');
+                }
+            } catch (error) {
+                // Handle error if necessary
+                console.error('Error checking user status:', error);
+            }
+        };
 
+        checkUserLoggedIn();
+    }, [navigate]);
     return (
         <div className="container vh-100 d-flex justify-content-center align-items-center">
             <div className="card p-4 shadow-lg" style={{ maxWidth: '400px', width: '100%', marginTop: '-25px' }}>

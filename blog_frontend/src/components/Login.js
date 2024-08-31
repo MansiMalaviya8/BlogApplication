@@ -1,13 +1,30 @@
 // src/components/Login.js
-import React, { useState, useContext } from 'react';
-import AuthContext from '../services/AuthContext';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchUser, login } from '../services/AuthAPI'; // Import the fetchUser function
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const { login } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check if user is already logged in
+        const checkUserLoggedIn = async () => {
+            try {
+                const user = await fetchUser();
+                if (user) {
+                    // User is logged in, redirect to home
+                    navigate('/');
+                }
+            } catch (error) {
+                // Handle error if necessary
+                console.error('Error checking user status:', error);
+            }
+        };
+
+        checkUserLoggedIn();
+    }, [navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -13,25 +13,28 @@ const Post = () => {
 
   const [postById, setPostById] = useState(null);
   const [userById, setUserById] = useState(null);
+  // const [likes, setLikes] = useState([]);
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
-
+  let liked = false;
   const fetchData = async () => {
     setLoading(true);
     setError(null);
     try {
-      const post = await fetchPostById(postId);
-      setPostById(post);
-
       // Fetch current user
       const currentUser = await fetchUser();
       setUser(currentUser);
-      console.log(post.likes.includes(currentUser.id))
+      // console.log(currentUser)
 
-      setIsLiked(post.likes.includes(currentUser.id));
+      const post = await fetchPostById(postId);
+      setPostById(post);
+
+
+      setIsLiked(post.likes.some(like => like.id === currentUser.id));
       // Fetch post creator
       const postCreator = await fetchUserById(post.created_by);
       setUserById(postCreator);
@@ -55,7 +58,7 @@ const Post = () => {
         // Fetch updated post data after liking
         const post = await fetchPostById(postId);
         setPostById(post);
-
+        
         setIsLiked(!isLiked);
       }
     } catch (error) {
@@ -72,6 +75,7 @@ const Post = () => {
   // Initial data fetch when the component mounts
   useEffect(() => {
     handleLoadPost();
+    setIsLiked(liked);
   }, [postId]);
 
   if (loading) {

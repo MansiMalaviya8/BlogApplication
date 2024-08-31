@@ -21,6 +21,28 @@ export const fetchUser = async () => {
     return null;
 };
 
+export const login = async (username, password) => {
+    try {
+        const response = await axios.post('http://127.0.0.1:8000/api/login/', { username, password });
+        const { access } = response.data;
+        localStorage.setItem('accessToken', access);
+        return await fetchUser();  // Fetch user data after logging in
+    } catch (error) {
+        console.error('Login failed:', error);
+        throw new Error('Login failed');
+    }
+};
+
+export  const register = async (username, email, password) => {
+    try {
+        const response = await axios.post('http://127.0.0.1:8000/api/register/', { username, email, password});
+        return response.data;
+    } catch (error) {
+        console.error('Registration failed:', error);
+        throw new Error('Registration failed');
+    }
+};
+
 export const fetchUserById = async (id) => {
     try {
         const response = await axios.get(`http://127.0.0.1:8000/api/users/${id}/`);
