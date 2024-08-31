@@ -31,6 +31,7 @@ const Profile = () => {
           // Fetch posts
           const userPosts = await fetchPosts(userDetails.id);
           setPosts(userPosts);
+          console.log(userPosts)
 
           setLoading(false);
         } else {

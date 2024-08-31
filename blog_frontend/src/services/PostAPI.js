@@ -42,6 +42,14 @@ export const createPost = async (postData) => {
   }
 };
 
+export const deletePost = async (postId) => {
+  try {
+    await axios.delete(`${API_URL}/posts/${postId}/delete/`);
+  } catch (error) {
+    throw new Error('Failed to delete the post');
+  }
+};
+
 export const fetchPostById = async (id) => {
   try {
     const response = await axios.get(`${API_URL}/posts/${id}/`);

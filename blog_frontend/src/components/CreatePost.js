@@ -15,6 +15,10 @@ const CreatePost = () => {
         const loadUser = async () => {
             try {
                 const userData = await fetchUser();
+                if(!userData){
+                navigate('/login');
+
+                }
                 setUser(userData);
             } catch (error) {
                 console.error('Error fetching user:', error);
