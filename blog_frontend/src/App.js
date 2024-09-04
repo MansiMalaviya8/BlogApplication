@@ -1,5 +1,5 @@
 // src/App.js
-import React from "react";
+import React, {useState} from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -15,14 +15,23 @@ import { PostProvider } from "./services/PostContext";
 import Register from "./components/Register";
 
 const App = () => {
+
+  const [key, setKey] = useState(0);
+
+  const handleLogout = () => {
+    // Perform any logout logic here
+    setKey(prevKey => prevKey + 1); // Increment key to force re-render
+  };
+
   return (
     <AuthProvider>
       <PostProvider>
         <Router>
-          <Navbar />
+          <Navbar onLogout={handleLogout} />
           <div className="container mt-4">
-            <Routes>
+            <Routes key={key}>
               <Route path="/" element={<Home />} />
+
               <Route path="/create" element={<CreatePost />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />

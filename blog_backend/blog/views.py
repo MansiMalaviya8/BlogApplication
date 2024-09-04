@@ -180,3 +180,15 @@ def exclude_post_view(request, user_id):
     
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['DELETE'])
+def post_delete(request, pk):
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

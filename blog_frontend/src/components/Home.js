@@ -23,8 +23,8 @@ const Posts = () => {
 
         } else {
         results = await fetchPosts();
-        console.log(results.results)
-        setPosts(Array.isArray(results.results) ? results.results: []);
+        console.log(results)
+        setPosts(Array.isArray(results) ? results: []);
         }
         
       } catch (error) {

@@ -89,7 +89,7 @@ const NavbarWrapper = styled.nav`
   }
 `;
 
-const Navbar = () => {
+const Navbar = ({onLogout}) => {
   const { logout, fetchUser } = useContext(AuthContext);
   const navigation = useNavigate();
   const location = useLocation();
@@ -107,6 +107,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     await logout();
+    onLogout();
     await navigation("/");
   };
 

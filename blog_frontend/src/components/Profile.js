@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Image, Form, Spinner, Alert } from "react-bootstrap";
 import { Pencil } from "lucide-react";
 import { fetchUser, fetchFollowCounts, editProfile } from '../services/AuthAPI'; // Adjust the path as necessary
-import { fetchPosts } from "../services/PostAPI";
+import { deletePost, fetchPosts } from "../services/PostAPI";
 import PostCard from "./PostCard";
+// import Modal from "./Modal";
 
 const Profile = () => {
   const [followCounts, setFollowCounts] = useState({
@@ -15,6 +16,13 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success");
+
 
   useEffect(() => {
     const loadData = async () => {
@@ -64,6 +72,34 @@ const Profile = () => {
         setError("Failed to update profile photo");
       }
     }
+  };
+
+  const handleDeleteClick = (post) => {
+    setPostToDelete(post);
+    
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (postToDelete) {
+      try {
+        await deletePost(postToDelete.id);
+        setPosts(posts.filter(post => post.id !== postToDelete.id));
+        setPostToDelete(null);
+        setToastMessage("Post deleted successfully.");
+        setToastType("success");
+       
+      } catch (error) {
+        setToastMessage("Failed to delete the post.");
+        setToastType("error");
+      }
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 5000);
+    }
+  };
+
+  const handleModalClose = () => {
+    setPostToDelete(null);
+    setIsModalVisible(false);
   };
 
   if (loading) {
@@ -124,13 +160,50 @@ const Profile = () => {
             <div className="posts-list row row-cols-1 row-cols-md-3 g-4">
               {/* Render current posts */}
               {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <PostCard key={post.id} post={post} currentUser={user} onDelete={() => handleDeleteClick(post)} />
               ))}
             </div>
             </>
           )}
         </Col>
       </Row> 
+      {/* Bootstrap Modal */}
+      <div className="modal fade" id="deleteConfirmationModal"  data-bs-backdrop="static"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">Delete Confirmation</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="modal-body">
+              {postToDelete ? `Are you sure you want to delete the post titled "${postToDelete.title}"?` : ''}
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={handleDeleteConfirm}>Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Toast Notification */}
+      <div className="toast-container position-fixed bottom-0 end-0 p-3">
+        <div
+          id="liveToast"
+          className={`toast ${showToast ? 'show' : ''} ${toastType === 'success' ? 'bg-success text-light' : 'bg-danger text-light'}`}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div className="toast-header">
+            <strong className="me-auto">{toastType === 'success' ? 'Success' : 'Error'}</strong>
+            <button type="button" className="btn-close" onClick={() => setShowToast(false)} aria-label="Close"></button>
+          </div>
+          <div className="toast-body">
+            {toastMessage}
+          </div>
+        </div>
+      </div>
     </Container>
   );
 };

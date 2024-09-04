@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { deletePost } from "../services/PostAPI";
 import { toggleFollow, fetchUser, fetchUserById } from "../services/AuthAPI";
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post, currentUser,onDelete }) => {
   const navigate = useNavigate();
   const [creator, setCreator] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,6 @@ const PostCard = ({ post }) => {
       setError(null);
       try {
         // Fetch current user details
-        const currentUser = await fetchUser();
         setUser(currentUser);
 
         // Fetch creator details
@@ -50,36 +49,13 @@ const PostCard = ({ post }) => {
   };
 
   const handlePost = () => {
+    console.log("in read more")
+    console.log(currentUser)
     if (user) {
       navigate(`/posts/${post.id}`);
     } else {
       navigate("/login");
     }
-  };
-
-  const handleDelete = async () => {
-    if (user) {
-      try {
-        await deletePost(post.id);
-        setToastMessage("Post deleted successfully.");
-        setToastType("success");
-      } catch (error) {
-        setToastMessage("Failed to delete the post.");
-        setToastType("error");
-      }
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 5000); // Hide toast after 5 seconds
-    } else {
-      navigate('/login');
-    }
-  };
-
-  const confirmDelete = () => {
-    handleDelete();
-    // Hide modal programmatically
-    const modalElement = document.getElementById('deleteConfirmationModal');
-    const modal = new window.bootstrap.Modal(modalElement);
-    modal.hide();
   };
 
   if (loading) {
@@ -143,8 +119,21 @@ const PostCard = ({ post }) => {
                   data-bs-toggle="modal"
                   data-bs-target="#deleteConfirmationModal"
                   className="mt-2"
+                  onClick={onDelete}
                 >
                   Delete Post
+                </Button>
+              </>
+            )}
+            {creator?.id != user?.id && (
+              <>
+                <Button
+                  variant="outline-dark"
+                  size="sm"
+                  className="mt-2"
+                  onClick={handleFollow}
+                >
+                  Follow author
                 </Button>
               </>
             )}
@@ -157,27 +146,10 @@ const PostCard = ({ post }) => {
         </Card>
       </div>
 
-      {/* Toast Notification */}
-      <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        <div
-          id="liveToast"
-          className={`toast ${showToast ? 'show' : ''} ${toastType === 'success' ? 'bg-success text-light' : 'bg-danger text-light'}`}
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-        >
-          <div className="toast-header">
-            <strong className="me-auto">{toastType === 'success' ? 'Success' : 'Error'}</strong>
-            <button type="button" className="btn-close" onClick={() => setShowToast(false)} aria-label="Close"></button>
-          </div>
-          <div className="toast-body">
-            {toastMessage}
-          </div>
-        </div>
-      </div>
+      
 
       {/* Confirmation Modal */}
-      <div className="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+      {/* <div className="modal fade" id="deleteConfirmationModal" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -189,11 +161,11 @@ const PostCard = ({ post }) => {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="button" className="btn btn-danger" onClick={confirmDelete}>Delete</button>
+              <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={confirmDelete}>Delete</button>
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

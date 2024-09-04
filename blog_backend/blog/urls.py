@@ -1,6 +1,6 @@
 from django.urls import path
 from blog_backend import settings
-from .views import PostCreateView, PostDetailView,PostListView, add_comment, get_comments,like_post, search_view,exclude_post_view
+from .views import post_delete,PostCreateView, PostDetailView,PostListView, add_comment, get_comments,like_post, search_view,exclude_post_view
 from django.conf.urls.static import static
 
 
@@ -13,6 +13,7 @@ urlpatterns = [
     path('comments/add/', add_comment, name='add_comment'),
     path('search/', search_view, name='search'),
     path('posts/exclude/<int:user_id>', exclude_post_view, name='exclude_post_view'),
+    path('posts/<int:pk>/delete/', post_delete, name='post-delete'),
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

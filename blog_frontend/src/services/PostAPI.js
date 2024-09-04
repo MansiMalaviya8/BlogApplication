@@ -21,7 +21,7 @@ export const fetchPosts = async (userId = null) => {
 
     // If a userId is provided, filter posts created by that user
     if (userId) {
-      return posts.results.filter(post => post.created_by === userId);
+      return posts.filter(post => post.created_by === userId);
     }
 
     return posts;
