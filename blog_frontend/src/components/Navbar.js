@@ -150,8 +150,18 @@ const Navbar = ({onLogout}) => {
                 Create Post
               </Link>
             </li>
+            <li className="nav-item">
+              <Link
+                className={`nav-link ${
+                  location.pathname === "/search" ? "active" : ""
+                }`}
+                to="/search"
+              >
+                Search Posts
+              </Link>
+            </li>
             {/* Dropdown for Categories */}
-            <li className="nav-item dropdown">
+            {/* <li className="nav-item dropdown">
               <Link
                 className="nav-link dropdown-toggle"
                 to="#"
@@ -189,11 +199,11 @@ const Navbar = ({onLogout}) => {
                   </Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
           </ul>
 
           <div className="auth-buttons">
-            <div className="search-container">
+            {/* <div className="search-container">
               <input
                 type="text"
                 placeholder="Search..."
@@ -201,7 +211,7 @@ const Navbar = ({onLogout}) => {
                 onChange={(e) => setQuery(e.target.value)}
               />
               <Search className="search-icon" size={18} />
-            </div>
+            </div> */}
             {!user ? (
               <>
                 <Link className="btn" to="/login">

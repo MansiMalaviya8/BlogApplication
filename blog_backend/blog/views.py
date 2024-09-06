@@ -133,9 +133,10 @@ def search_view(request):
 
     # Search in Post model
     posts = Post.objects.filter(
+        Q(category__icontains=query) |
         Q(title__icontains=query) |
         Q(content__icontains=query) |
-        Q(category__icontains=query) 
+        Q(created_by__username__icontains=query)
     )
 
     # Search in UserProfile model
@@ -147,6 +148,23 @@ def search_view(request):
     # Serialize results
     post_serializer = PostSerializer(posts, many=True)
     user_serializer = AuthUserProfileSerializer(users, many=True)
+
+    post_data = post_serializer.data
+    for post in post_data:
+        if post.get('post_photo'):
+            post['post_photo'] = request.build_absolute_uri(post['post_photo'])
+    
+    user_data = user_serializer.data
+    for user in user_data:
+        if user.get('profile_photo'):
+            user['profile_photo'] = request.build_absolute_uri(user['profile_photo'])
+
+    # Combine results
+    results = {
+        'posts': post_data,
+        'users': user_data
+    }
+
 
     # Combine results
     results = {
