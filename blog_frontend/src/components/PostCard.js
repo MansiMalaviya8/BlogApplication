@@ -58,6 +58,16 @@ const PostCard = ({ post, currentUser,onDelete }) => {
     }
   };
 
+  const handleCreaterProfile = () => {
+    console.log("in read more")
+    console.log(currentUser)
+    if (user) {
+      navigate(`/users/${post.created_by}`);
+    } else {
+      navigate("/login");
+    }
+  };
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -81,7 +91,7 @@ const PostCard = ({ post, currentUser,onDelete }) => {
             e.currentTarget.style.transform = "scale(1)";
           }}
         >
-          <div className="d-flex align-items-center m-1">
+          <div className="d-flex align-items-center m-1" onClick={handleCreaterProfile} style={{ cursor: "pointer" }}>
             <Image
               src={creator?.profile_photo || "default_profile.jpeg"}
               roundedCircle
@@ -89,7 +99,7 @@ const PostCard = ({ post, currentUser,onDelete }) => {
               alt="User Avatar"
               style={{ width: "40px", height: "40px" }}
             />
-            <h6>{creator?.username}</h6>
+            <h6 className="d-inline">{creator?.username}</h6>
           </div>
           <Card.Img
             variant="top"
