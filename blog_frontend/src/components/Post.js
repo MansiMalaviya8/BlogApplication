@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Container, Row, Col, Card, Image } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, Image } from "react-bootstrap";
 import { ThumbsUp, MessageSquare } from "lucide-react";
 import { useParams } from "react-router-dom";
 import PostContext from "../services/PostContext";
 import AuthContext from "../services/AuthContext";
 import CommentSection from "./CommentSection";
+import { toggleFollow } from "../services/AuthAPI";
 
 const Post = () => {
   const { postId } = useParams();
@@ -20,6 +21,8 @@ const Post = () => {
   const [error, setError] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false); // Initial state can be set based on props
+
   let liked = false;
   const fetchData = async () => {
     setLoading(true);
@@ -33,17 +36,28 @@ const Post = () => {
       const post = await fetchPostById(postId);
       setPostById(post);
 
-
-      setIsLiked(post.likes.some(like => like.id === currentUser.id));
+      setIsLiked(post.likes.some((like) => like.id === currentUser.id));
       // Fetch post creator
       const postCreator = await fetchUserById(post.created_by);
       setUserById(postCreator);
       // Check if the current user has liked the post
-      
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFollow = async () => {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+    try {
+      const result = await toggleFollow(postById.created_by, user.id);
+      console.log("Follow result:", result);
+    } catch (error) {
+      console.error("Failed to follow user:", error);
     }
   };
 
@@ -58,7 +72,7 @@ const Post = () => {
         // Fetch updated post data after liking
         const post = await fetchPostById(postId);
         setPostById(post);
-        
+
         setIsLiked(!isLiked);
       }
     } catch (error) {
@@ -70,6 +84,12 @@ const Post = () => {
     if (postId) {
       await fetchData();
     }
+  };
+
+  // Function to format the username with a dot and follow status
+  const getUsernameWithStatus = (username, following) => {
+    if (!username) return "";
+    return `${username}•${following ? "following" : "follow"}`;
   };
 
   // Initial data fetch when the component mounts
@@ -91,17 +111,26 @@ const Post = () => {
       {postById && (
         <Card className="shadow-lg ">
           <div className="d-flex align-items-center ms-3 mt-2">
-                  <Image
-                    src={userById?.profile_photo || "default_profile.jpeg"}
-                    roundedCircle
-                    className="img-fluid me-2"
-                    alt="User Avatar"
-                    style={{ width: "40px", height: "40px" }}
-                  />
-                  <h4>{userById?.username}</h4>
-                </div>
+            <Image
+              src={userById?.profile_photo || "default_profile.jpeg"}
+              roundedCircle
+              className="img-fluid me-2"
+              alt="User Avatar"
+              style={{ width: "40px", height: "40px" }}
+            />
+            <h6>
+              {userById?.username && (
+                <span>
+                  {getUsernameWithStatus(userById.username, isFollowing)}
+                </span>
+              )}
+            </h6>
+          </div>
           <Row className="g-0">
-            <Col md={6} className="d-flex align-items-center justify-content-center p-2">
+            <Col
+              md={6}
+              className="d-flex align-items-center justify-content-center p-2"
+            >
               <Card.Img
                 src={postById.post_photo}
                 alt={postById.title}
@@ -114,8 +143,9 @@ const Post = () => {
                 <h2 className="mb-3 ">{postById.title}</h2>
                 {/* <strong >Category: </strong> {postById.category} 
                 <br ></br> */}
-                <strong > Posted on: </strong>{new Date(postById.created_at).toLocaleString()}
-                
+                <strong> Posted on: </strong>
+                {new Date(postById.created_at).toLocaleString()}
+
                 <div className="d-flex align-items-center mb-3 mt-3">
                   <ThumbsUp
                     className={`me-2 ${isLiked ? "text-primary" : ""}`}
@@ -142,4 +172,4 @@ const Post = () => {
   );
 };
 
-export default Post;
+export default Post;

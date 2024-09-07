@@ -3,22 +3,25 @@ import { Carousel, Pagination } from "react-bootstrap";
 import AuthContext from "../services/AuthContext";
 import PostContext from "../services/PostContext";
 import PostCard from "./PostCard";
+import { fetchUser } from "../services/AuthAPI";
 
 const Posts = () => {
-  const { fetchUser } = useContext(AuthContext);
   const { fetchHomePosts, loading, searchResults, fetchPosts } =useContext(PostContext);
 
   const [posts, setPosts] = useState([]);
+  const [user, setUser] = useState(null);
+
   // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadPosts = async () => {
       try {
-        const user = await fetchUser();
+        const userData = await fetchUser();
+        setUser(userData)
         let results = [];
-        if (user) {
-        results = await fetchHomePosts(user.id);
+        if (userData) {
+        results = await fetchHomePosts(userData.id);
         setPosts(Array.isArray(results) ? results: []);
 
         } else {
@@ -120,7 +123,7 @@ const Posts = () => {
       <div className="posts-list row row-cols-1 row-cols-md-4 g-4">
         {/* Render current posts */}
         {currentPosts.map((post) => (
-          <PostCard key={post.id} post={post} />
+          <PostCard key={post.id} post={post} currentUser={user} />
         ))}
       </div>
 

@@ -2,15 +2,22 @@ import React, { useState, useEffect } from "react";
 
 import { searchPosts } from "../services/PostAPI";
 import PostCard from "./PostCard";
+import { fetchUser } from "../services/AuthAPI";
 
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
+  const [user, setUser] = useState([]);
+
 
   const handleSearch = async () => {
     try {
+
+      const userData = await fetchUser();
+      setUser(userData);
+
       // Call the searchPosts function from the API
       const { posts: searchPostsData, users: searchUsers } = await searchPosts(
         searchTerm
@@ -149,7 +156,7 @@ const SearchResults = () => {
             <>
               {/* Render current posts */}
               {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
+                <PostCard key={post.id} post={post} currentUser={user} />
               ))}
             </>
           )}

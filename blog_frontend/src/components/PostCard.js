@@ -125,18 +125,7 @@ const PostCard = ({ post, currentUser,onDelete }) => {
                 </Button>
               </>
             )}
-            {creator?.id != user?.id && (
-              <>
-                <Button
-                  variant="outline-dark"
-                  size="sm"
-                  className="mt-2"
-                  onClick={handleFollow}
-                >
-                  Follow author
-                </Button>
-              </>
-            )}
+            
             <Card.Text className="mt-2 mb-3">
               <small className="text-muted">
                 {new Date(post.created_at).toLocaleString()}
