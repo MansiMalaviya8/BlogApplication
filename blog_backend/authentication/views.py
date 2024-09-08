@@ -125,10 +125,15 @@ def get_follow_counts(request, user_id):
     # Calculate follower count and following count
     following_count = FollowersKeys.objects.filter(following_user_id=user).count()
     follower_count = FollowersKeys.objects.filter(user_id=user).count()
+    followers = FollowersKeys.objects.filter(user_id=user)
+
+    serializer = FollowersKeysSerializer(followers, many=True)
+
     
     return Response({
         'follower_count': follower_count,
-        'following_count': following_count
+        'following_count': following_count,
+        'followers_list': serializer.data
     }, status=status.HTTP_200_OK)
 
 
