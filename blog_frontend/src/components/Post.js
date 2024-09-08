@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Image } from "react-bootstrap";
-import { ThumbsUp, MessageSquare } from "lucide-react";
+import { ThumbsUp, MessageSquare, AwardIcon } from "lucide-react";
 import { useParams } from "react-router-dom";
 import PostContext from "../services/PostContext";
 import AuthContext from "../services/AuthContext";
 import CommentSection from "./CommentSection";
-import { toggleFollow } from "../services/AuthAPI";
+import { fetchFollowCounts, toggleFollow } from "../services/AuthAPI";
 
 const Post = () => {
   const { postId } = useParams();
@@ -40,7 +40,13 @@ const Post = () => {
       // Fetch post creator
       const postCreator = await fetchUserById(post.created_by);
       setUserById(postCreator);
-      // Check if the current user has liked the post
+
+      const followersList = await fetchFollowCounts(postCreator.id);
+      setIsFollowing(
+        followersList.followers_list.some(
+          (f) => (f.following_user_id = currentUser.id)
+        )
+      );
     } catch (err) {
       setError(err.message);
     } finally {
@@ -55,6 +61,14 @@ const Post = () => {
     }
     try {
       const result = await toggleFollow(postById.created_by, user.id);
+
+       setIsFollowing(!isFollowing)
+      // const followersList = await fetchFollowCounts(postById.created_by);
+      // setIsFollowing(
+      //   followersList.followers_list.some(
+      //     (f) => (f.following_user_id = user.id)
+      //   )
+      // );
       console.log("Follow result:", result);
     } catch (error) {
       console.error("Failed to follow user:", error);
@@ -86,16 +100,12 @@ const Post = () => {
     }
   };
 
-  // Function to format the username with a dot and follow status
-  const getUsernameWithStatus = (username, following) => {
-    if (!username) return "";
-    return `${username}•${following ? "following" : "follow"}`;
-  };
 
   // Initial data fetch when the component mounts
   useEffect(() => {
     handleLoadPost();
     setIsLiked(liked);
+    setIsFollowing(isFollowing)
   }, [postId]);
 
   if (loading) {
@@ -112,7 +122,7 @@ const Post = () => {
         <Card className="shadow-lg ">
           <div className="d-flex align-items-center ms-3 mt-2">
             <Image
-              src={userById?.profile_photo || "default_profile.jpeg"}
+              src={userById?.profile_photo || "/default_profile.jpeg"}
               roundedCircle
               className="img-fluid me-2"
               alt="User Avatar"
@@ -120,9 +130,15 @@ const Post = () => {
             />
             <h6>
               {userById?.username && (
-                <span>
-                  {getUsernameWithStatus(userById.username, isFollowing)}
-                </span>
+                <>
+                  <span>{userById.username}</span>
+                  <span onClick={handleFollow}>
+                    <b style={{ cursor: "pointer" }}>
+                      {userById.id !== user.id &&
+                        (isFollowing ? "• Following" : "• Follow")}
+                    </b>
+                  </span>
+                </>
               )}
             </h6>
           </div>

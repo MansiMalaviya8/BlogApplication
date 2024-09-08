@@ -171,7 +171,7 @@ const SearchResults = () => {
                         <div className="row g-0">
                             <div className="col-md-4">
                                 <img
-                                    src={user.profile_photo || 'default_image_url'} // Replace with a default image URL if needed
+                                    src={user.profile_photo || 'default_profile.jpeg'} // Replace with a default image URL if needed
                                     className="img-fluid rounded-start"
                                     alt={user.username}
                                     style={{ width: '100px', height: '100px', objectFit: 'cover' }}
