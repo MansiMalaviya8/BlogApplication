@@ -6,7 +6,6 @@ import PostContext from "../services/PostContext";
 import AuthContext from "../services/AuthContext";
 import CommentSection from "./CommentSection";
 import { fetchFollowCounts, toggleFollow } from "../services/AuthAPI";
-import { toggleFollow } from "../services/AuthAPI";
 import { useNavigate } from 'react-router-dom';
 
 const Post = () => {
