@@ -6,22 +6,23 @@ import PostContext from "../services/PostContext";
 import AuthContext from "../services/AuthContext";
 import CommentSection from "./CommentSection";
 import { fetchFollowCounts, toggleFollow } from "../services/AuthAPI";
+import { toggleFollow } from "../services/AuthAPI";
+import { useNavigate } from 'react-router-dom';
 
 const Post = () => {
   const { postId } = useParams();
   const { likePost, fetchPostById } = useContext(PostContext);
   const { fetchUser, isAuthenticated, fetchUserById } = useContext(AuthContext);
-
   const [postById, setPostById] = useState(null);
   const [userById, setUserById] = useState(null);
-  // const [likes, setLikes] = useState([]);
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [commentCount, setCommentCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false); // Initial state can be set based on props
+  const navigate = useNavigate();
+
 
   let liked = false;
   const fetchData = async () => {
@@ -99,6 +100,10 @@ const Post = () => {
       await fetchData();
     }
   };
+  const handleCreaterProfile=()=>{
+    navigate(`/users/${postById.created_by}`);
+
+  }
 
 
   // Initial data fetch when the component mounts
@@ -120,7 +125,7 @@ const Post = () => {
     <Container className="mt-8 mb-5" style={{ marginTop: "5rem" }}>
       {postById && (
         <Card className="shadow-lg ">
-          <div className="d-flex align-items-center ms-3 mt-2">
+          <div className="d-flex align-items-center ms-3 mt-2" onClick={handleCreaterProfile} style={{ cursor: "pointer" }}>
             <Image
               src={userById?.profile_photo || "/default_profile.jpeg"}
               roundedCircle

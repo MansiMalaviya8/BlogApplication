@@ -45,7 +45,7 @@ export  const register = async (username, email, password) => {
 
 export const fetchUserById = async (id) => {
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/users/${id}/`);
+        const response = await axios.get(`${BASE_URL}user/${id}/`);
         return response.data;
     } catch (error) {
         console.error('Error fetching post by ID:', error);
