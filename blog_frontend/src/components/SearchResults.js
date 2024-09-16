@@ -3,6 +3,8 @@ import { searchPosts } from "../services/PostAPI";
 import PostCard from "./PostCard";
 import { fetchUser } from "../services/AuthAPI";
 import { Search } from "lucide-react"; // Import the Search icon from Lucide
+import { useLocation, useNavigate } from 'react-router-dom'; // Import useLocation to access query parameters
+
 
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,9 +50,27 @@ const SearchResults = () => {
     }
   };
 
+  const location = useLocation(); // Hook to access URL location
+  const queryParams = new URLSearchParams(location.search);
+  const categoryFromQuery = queryParams.get("category");
+  const navigate = useNavigate();
+  
   useEffect(() => {
-    handleSearch();
-  }, [searchTerm, selectedCategory]);
+    
+    if (categoryFromQuery) {
+      setSelectedCategory(categoryFromQuery);
+      handleCategorySelect(categoryFromQuery);
+      navigate(navigate("/search"))
+    }
+    // if(selectedCategory){
+    //   handleCategorySelect(selectedCategory);
+
+    // }
+    if(searchTerm){
+
+      handleSearch();
+    }
+  }, [searchTerm, selectedCategory, categoryFromQuery]);
 
   return (
     <div className="container" style={{ marginTop: "5rem" }}>

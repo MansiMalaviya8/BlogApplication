@@ -4,6 +4,8 @@ import AuthContext from "../services/AuthContext";
 import PostContext from "../services/PostContext";
 import PostCard from "./PostCard";
 import { fetchUser } from "../services/AuthAPI";
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook for navigation
+
 
 const Posts = () => {
   const { fetchHomePosts, loading, searchResults, fetchPosts } =useContext(PostContext);
@@ -13,6 +15,7 @@ const Posts = () => {
 
   // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadPosts = async () => {
@@ -57,65 +60,73 @@ const Posts = () => {
     }
   };
 
+  const handleSelect = (category) => {
+    navigate(`/search?category=${category}`); // Navigate to search with category query parameter
+  };
+
   return (
     <div>
       <Carousel style={{ marginTop: "75px" }}>
-        <Carousel.Item>
+      <Carousel.Item onClick={() => handleSelect("POL")}>
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
           <img
-            className="d-block w-100"
+            className="d-block w-75"
             src="/passion.jpg"
-            alt="First slide"
-            height="600px"
-            width="800px"
+            alt="Politics"
+            style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
           />
-          <Carousel.Caption>
-            <h3>First Slide</h3>
-            <p>Description for the first slide.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
+        </div>
+        <Carousel.Caption>
+          <h3>Politics</h3>
+          <p>Latest news and updates from the world of politics.</p>
+        </Carousel.Caption>
+      </Carousel.Item>
 
-        <Carousel.Item>
+      <Carousel.Item onClick={() => handleSelect("SPO")}>
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
           <img
-            className="d-block w-100"
+            className="d-block w-75"
             src="/food.jpg"
-            alt="Second slide"
-            height="600px"
-            width="800px"
+            alt="Sports"
+            style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
           />
-          <Carousel.Caption>
-            <h3>Second Slide</h3>
-            <p>Description for the second slide.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
+        </div>
+        <Carousel.Caption>
+          <h3>Sports</h3>
+          <p>Latest sports news and updates.</p>
+        </Carousel.Caption>
+      </Carousel.Item>
 
-        <Carousel.Item>
+      <Carousel.Item onClick={() => handleSelect("ENT")}>
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
           <img
-            className="d-block w-100"
+            className="d-block w-75"
             src="/travel.jpg"
-            alt="Third slide"
-            height="600px"
-            width="800px"
+            alt="Entertainment"
+            style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
           />
-          <Carousel.Caption>
-            <h3>Third Slide</h3>
-            <p>Description for the third slide.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
+        </div>
+        <Carousel.Caption>
+          <h3>Entertainment</h3>
+          <p>Latest news and updates from the world of entertainment.</p>
+        </Carousel.Caption>
+      </Carousel.Item>
 
-        <Carousel.Item>
+      <Carousel.Item onClick={() => handleSelect("OTR")}>
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
           <img
-            className="d-block w-100" // Consistent class with other slides
+            className="d-block w-75"
             src="/news.jpg"
-            alt="Fourth slide"
-            height="600px"
-            width="800px"
+            alt="Technology"
+            style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
           />
-          <Carousel.Caption>
-            <h3>Fourth Slide</h3>
-            <p>Description for the fourth slide.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-      </Carousel>
+        </div>
+        <Carousel.Caption>
+          <h3>Technology</h3>
+          <p>Latest tech news and updates.</p>
+        </Carousel.Caption>
+      </Carousel.Item>
+    </Carousel>
 
       {loading && <p>Loading...</p>}
 

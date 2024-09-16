@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { Facebook, Twitter, Instagram } from 'lucide-react';
 
@@ -67,10 +68,10 @@ const Footer = () => {
                     </a>
                 </div>
                 <div className="nav-links">
-                    <a href="/about">About</a>
-                    <a href="/contact">Contact</a>
-                    <a href="/privacy">Privacy Policy</a>
-                </div>
+                    <Link to="/about">About</Link>
+                    <Link to="/contact">Contact</Link>
+                    <Link to="/privacy">Privacy Policy</Link>
+                    </div>
                 <div className="copyright">
                     &copy; {new Date().getFullYear()} MyBlog. All Rights Reserved.
                 </div>
