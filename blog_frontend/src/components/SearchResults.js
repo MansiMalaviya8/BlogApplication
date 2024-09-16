@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-
 import { searchPosts } from "../services/PostAPI";
 import PostCard from "./PostCard";
 import { fetchUser } from "../services/AuthAPI";
+import { Search } from "lucide-react"; // Import the Search icon from Lucide
 
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,25 +10,19 @@ const SearchResults = () => {
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState([]);
-
+  const [showPosts, setShowPosts] = useState(true); // State to toggle between showing posts and users
 
   const handleSearch = async () => {
     try {
-
       const userData = await fetchUser();
       setUser(userData);
 
-      // Call the searchPosts function from the API
-      const { posts: searchPostsData, users: searchUsers } = await searchPosts(
-        searchTerm
-      );
-      // Filter posts by category if needed
+      const { posts: searchPostsData, users: searchUsers } = await searchPosts(searchTerm);
+
       const filteredPosts =
         selectedCategory === "All"
           ? searchPostsData
-          : searchPostsData.filter(
-              (post) => post.category === selectedCategory
-            );
+          : searchPostsData.filter((post) => post.category === selectedCategory);
 
       setPosts(filteredPosts);
       setUsers(searchUsers);
@@ -40,158 +34,144 @@ const SearchResults = () => {
   const handleCategorySelect = async (category) => {
     setSelectedCategory(category);
     if (searchTerm === "") {
-      const { posts: searchPostsData, users: searchUsers } = await searchPosts(
-        category
-      );
-      // Filter posts by category if needed
+      const { posts: searchPostsData, users: searchUsers } = await searchPosts(category);
+
       const filteredPosts =
         selectedCategory === "All"
           ? searchPostsData
-          : searchPostsData.filter(
-              (post) => post.category === selectedCategory
-            );
+          : searchPostsData.filter((post) => (post.category === selectedCategory)&&(post.created_by!==user.id));
 
       setPosts(filteredPosts);
       setUsers(searchUsers);
     } else {
-      handleSearch(); // Trigger search when category changes
+      handleSearch();
     }
   };
 
-  // Inline styles
-  const containerStyle = {
-    marginTop: "80px", // Adjust based on the height of your navbar
-    position: "relative",
-    zIndex: 1000,
-  };
-
-  const resultsStyle = {
-    marginTop: "20px",
-    maxHeight: "500px", // Adjust based on your needs
-    overflowY: "auto",
-  };
-
   useEffect(() => {
-    // Perform search whenever searchTerm or selectedCategory changes
     handleSearch();
   }, [searchTerm, selectedCategory]);
 
   return (
-    <>
-      <div style={containerStyle} className="input-group mb-3">
-        <button
-          className="btn btn-outline-secondary dropdown-toggle"
-          type="button"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          {selectedCategory}
-        </button>
-        <ul className="dropdown-menu dropdown-menu-end">
-          <li>
-            <a
-              className="dropdown-item"
-              onClick={() => handleCategorySelect("All")}
-            >
-              All
-            </a>
-          </li>
-          <li>
-            <a
-              className="dropdown-item"
-              onClick={() => handleCategorySelect("POL")}
-            >
-              Politics
-            </a>
-          </li>
-          <li>
-            <a
-              className="dropdown-item"
-              onClick={() => handleCategorySelect("BOL")}
-            >
-              Bollywood
-            </a>
-          </li>
-          <li>
-            <a
-              className="dropdown-item"
-              onClick={() => handleCategorySelect("SPO")}
-            >
-              Sports
-            </a>
-          </li>
-          <li>
-            <a
-              className="dropdown-item"
-              onClick={() => handleCategorySelect("TEC")}
-            >
-              Technology
-            </a>
-          </li>
-          <li>
-            <a
-              className="dropdown-item"
-              onClick={() => handleCategorySelect("OTR")}
-            >
-              Others
-            </a>
-          </li>
-        </ul>
-        <input
-          type="text"
-          className="form-control"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          aria-label="Text input with dropdown button"
-        />
-      </div>
+    <div className="container" style={{ marginTop: "5rem" }}>
+      {/* Search and category selection */}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        {/* Category buttons */}
+        <div className="btn-group">
+          <button
+            className={`btn ${selectedCategory === "All" ? "btn-dark" : "btn-outline-dark"}`}
+            onClick={() => handleCategorySelect("All")}
+          >
+            All
+          </button>
+          <button
+            className={`btn ${selectedCategory === "POL" ? "btn-dark" : "btn-outline-dark"}`}
+            onClick={() => handleCategorySelect("POL")}
+          >
+            Politics
+          </button>
+          <button
+            className={`btn ${selectedCategory === "BOL" ? "btn-dark" : "btn-outline-dark"}`}
+            onClick={() => handleCategorySelect("BOL")}
+          >
+            Bollywood
+          </button>
+          <button
+            className={`btn ${selectedCategory === "SPO" ? "btn-dark" : "btn-outline-dark"}`}
+            onClick={() => handleCategorySelect("SPO")}
+          >
+            Sports
+          </button>
+          <button
+            className={`btn ${selectedCategory === "TEC" ? "btn-dark" : "btn-outline-dark"}`}
+            onClick={() => handleCategorySelect("TEC")}
+          >
+            Technology
+          </button>
+          <button
+            className={`btn ${selectedCategory === "OTR" ? "btn-dark" : "btn-outline-dark"}`}
+            onClick={() => handleCategorySelect("OTR")}
+          >
+            Others
+          </button>
+        </div>
 
-      <div>
-        <h2>Posts</h2>
-
-        <div className="posts-list row row-cols-1 row-cols-md-4 g-4">
-          {posts.length === 0 ? (
-            <p>No posts found.</p>
-          ) : (
-            <>
-              {/* Render current posts */}
-              {posts.map((post) => (
-                <PostCard key={post.id} post={post} currentUser={user} />
-              ))}
-            </>
-          )}
+        {/* Search input */}
+        <div className="input-group" style={{ maxWidth: "400px" }}>
+          <input
+            type="text"
+            className="form-control"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label="Search"
+            placeholder="Search..."
+          />
+          <span className="input-group-text">
+            <Search />
+          </span>
         </div>
       </div>
 
-      <div>
-        <h2>Users</h2>
-        {users.length > 0 ? (
-                users.map(user => (
-                    <div className="card mb-3" style={{ maxWidth: '400px' }} key={user.id}>
-                        <div className="row g-0">
-                            <div className="col-md-4">
-                                <img
-                                    src={user.profile_photo || 'default_profile.jpeg'} // Replace with a default image URL if needed
-                                    className="img-fluid rounded-start"
-                                    alt={user.username}
-                                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                                />
-                            </div>
-                            <div className="col-md-8">
-                                <div className="card-body">
-                                    <h5 className="card-title">{user.username}</h5>
-                                    <p className="card-text">Email: {user.email}</p>
-                                   
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ))
-            ) : (
-                <p>No users found</p>
-            )}
+      {/* Toggle between posts and users */}
+      <div className="btn-group mb-4">
+        <button
+          className={`btn ${showPosts ? "btn-dark" : "btn-outline-dark"}`}
+          onClick={() => setShowPosts(true)}
+        >
+          Posts
+        </button>
+        <button
+          className={`btn ${!showPosts ? "btn-dark" : "btn-outline-dark"}`}
+          onClick={() => setShowPosts(false)}
+        >
+          Users
+        </button>
       </div>
-    </>
+
+      {/* Display posts or users based on selection */}
+      <div className="row">
+        {showPosts ? (
+          <div className="col-12">
+            <div className="row row-cols-1 row-cols-md-4 g-4">
+              {posts.length === 0 ? (
+                <p>No posts found.</p>
+              ) : (
+                posts.map((post) => (
+                    <PostCard post={post} currentUser={user} />
+                ))
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="col-12">
+            {users.length > 0 ? (
+              users.map((user) => (
+                <div className="card mb-3" style={{ maxWidth: "540px" }} key={user.id}>
+                  <div className="row g-0">
+                    <div className="col-md-4">
+                      <img
+                        src={user.profile_photo || "default_profile.jpeg"}
+                        className="img-fluid rounded-start"
+                        alt={user.username}
+                        style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                      />
+                    </div>
+                    <div className="col-md-8">
+                      <div className="card-body">
+                        <h5 className="card-title">{user.username}</h5>
+                        <p className="card-text">Email: {user.email}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No users found.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -132,18 +132,23 @@ def search_view(request):
         return Response({"error": "Search query parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
 
     # Search in Post model
-    posts = Post.objects.filter(
-        Q(category__icontains=query) |
-        Q(title__icontains=query) |
-        Q(content__icontains=query) |
-        Q(created_by__username__icontains=query)
-    )
-
-    # Search in UserProfile model
+    if query=='All':
+        posts=Post.objects.all()
+        
+    else:
+        posts = Post.objects.filter(
+            Q(category__icontains=query) |
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(created_by__username__icontains=query)
+        )
     users = UserProfile.objects.filter(
         Q(username__icontains=query) |
         Q(email__icontains=query)   
     )
+
+    # Search in UserProfile model
+    
 
     # Serialize results
     post_serializer = PostSerializer(posts, many=True)
