@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom'; // Import useLocati
 
 const SearchResults = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchKeywords, setSearchKeywords] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
@@ -19,6 +20,7 @@ const SearchResults = () => {
       const userData = await fetchUser();
       setUser(userData);
 
+      setSearchKeywords(searchTerm === "")
       const { posts: searchPostsData, users: searchUsers } = await searchPosts(searchTerm);
 
       const filteredPosts =
@@ -26,6 +28,7 @@ const SearchResults = () => {
           ? searchPostsData
           : searchPostsData.filter((post) => post.category === selectedCategory);
 
+          console.log(filteredPosts);
       setPosts(filteredPosts);
       setUsers(searchUsers);
     } catch (error) {
@@ -34,16 +37,20 @@ const SearchResults = () => {
   };
 
   const handleCategorySelect = async (category) => {
-    setSelectedCategory(category);
+    console.log("ry",category)
+    await setSelectedCategory(category);
     if (searchTerm === "") {
       const { posts: searchPostsData, users: searchUsers } = await searchPosts(category);
 
-      const filteredPosts =
-        selectedCategory === "All"
-          ? searchPostsData
-          : searchPostsData.filter((post) => (post.category === selectedCategory)&&(post.created_by!==user.id));
+      console.log(searchPostsData);
+      console.log(selectedCategory)
+      // const filteredPosts =
+      //   category === "All"
+      //     ? searchPostsData
+      //     : searchPostsData.filter((post) => (post.category === category)&&(post.created_by!==user.id));
+          // console.log(filteredPosts);
 
-      setPosts(filteredPosts);
+      setPosts(searchPostsData);
       setUsers(searchUsers);
     } else {
       handleSearch();
@@ -60,7 +67,7 @@ const SearchResults = () => {
     if (categoryFromQuery) {
       setSelectedCategory(categoryFromQuery);
       handleCategorySelect(categoryFromQuery);
-      navigate(navigate("/search"))
+      navigate("/search")
     }
     // if(selectedCategory){
     //   handleCategorySelect(selectedCategory);
@@ -70,7 +77,7 @@ const SearchResults = () => {
 
       handleSearch();
     }
-  }, [searchTerm, selectedCategory, categoryFromQuery]);
+  }, [searchTerm]);
 
   return (
     <div className="container" style={{ marginTop: "5rem" }}>

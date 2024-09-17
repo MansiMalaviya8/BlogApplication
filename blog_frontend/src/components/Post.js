@@ -124,7 +124,7 @@ const Post = () => {
     <Container className="mt-8 mb-5" style={{ marginTop: "5rem" }}>
       {postById && (
         <Card className="shadow-lg ">
-          <div className="d-flex align-items-center ms-3 mt-2" onClick={handleCreaterProfile} style={{ cursor: "pointer" }}>
+          <div className="d-flex align-items-center ms-3 mt-2"  style={{ cursor: "pointer" }}>
             <Image
               src={userById?.profile_photo || "/default_profile.jpeg"}
               roundedCircle
@@ -135,7 +135,7 @@ const Post = () => {
             <h6>
               {userById?.username && (
                 <>
-                  <span>{userById.username}</span>
+                  <span onClick={handleCreaterProfile}>{userById.username}</span>
                   <span onClick={handleFollow}>
                     <b style={{ cursor: "pointer" }}>
                       {userById.id !== user.id &&
