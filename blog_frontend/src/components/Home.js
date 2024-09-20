@@ -97,7 +97,7 @@ const Posts = () => {
         </Carousel.Caption>
       </Carousel.Item>
 
-      <Carousel.Item onClick={() => handleSelect("ENT")}>
+      <Carousel.Item onClick={() => handleSelect("BOL")}>
         <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
           <img
             className="d-block w-75"

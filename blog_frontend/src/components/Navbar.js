@@ -157,7 +157,7 @@ const Navbar = ({onLogout}) => {
                 }`}
                 to="/search"
               >
-                Search Posts
+                Search
               </Link>
             </li>
             {/* Dropdown for Categories */}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Image, Form, Spinner, Alert } from "react-bootstrap";
+import { Container, Row, Col, Image, Form, Spinner, Alert, Card } from "react-bootstrap";
 import { Edit } from "lucide-react";
 import { fetchUser, fetchFollowCounts, editProfile } from '../services/AuthAPI'; // Adjust the path as necessary
 import { deletePost, fetchPosts } from "../services/PostAPI";
@@ -113,7 +113,8 @@ const Profile = () => {
   return (
     <div>
     <Container style={{ marginTop: "75px" }}>
-      <Row className="align-items-center ">
+      <Card className="shadow">
+      <Row className="align-items-center m-3">
         <Col xs={4} md={3} className="position-relative">
           <Image
             src={user.profile_photo || "default_profile.jpeg"}
@@ -151,10 +152,11 @@ const Profile = () => {
           </div>
         </Col>
       </Row>
+      </Card>
       {/* You can uncomment and adjust the following to display posts */}
       <Row className="mt-4">
         <Col xs={12}>
-          <h5>Posts</h5>
+          <h5 className="mb-5 mt-3">Your uploaded Posts</h5>
           {posts.length === 0 ? (
             <p>No posts available.</p>
           ) : (
