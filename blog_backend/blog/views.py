@@ -139,7 +139,7 @@ def search_view(request):
         posts = Post.objects.filter(
             Q(category__icontains=query) |
             Q(title__icontains=query) |
-            Q(content__icontains=query) |
+            # Q(content__icontains=query) |
             Q(created_by__username__icontains=query)
         )
     users = UserProfile.objects.filter(
