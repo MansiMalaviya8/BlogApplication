@@ -14,7 +14,7 @@ const SearchResults = () => {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState([]);
   const [showPosts, setShowPosts] = useState(true); // State to toggle between showing posts and users
-
+  
   const handleSearch = async () => {
     try {
       const userData = await fetchUser();
@@ -57,6 +57,11 @@ const SearchResults = () => {
     }
   };
 
+  const handleCreaterProfile=(id)=>{
+    navigate(`/users/${id}`);
+
+  }
+
   const location = useLocation(); // Hook to access URL location
   const queryParams = new URLSearchParams(location.search);
   const categoryFromQuery = queryParams.get("category");
@@ -84,39 +89,40 @@ const SearchResults = () => {
       {/* Search and category selection */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         {/* Category buttons */}
-        <div className="btn-group">
+
+        <div>
           <button
-            className={`btn ${selectedCategory === "All" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${selectedCategory === "All" ? "btn-dark" : "btn-outline-dark"} me-2`}
             onClick={() => handleCategorySelect("All")}
           >
             All
           </button>
           <button
-            className={`btn ${selectedCategory === "POL" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${selectedCategory === "POL" ? "btn-dark" : "btn-outline-dark"} me-2`}
             onClick={() => handleCategorySelect("POL")}
           >
             Politics
           </button>
           <button
-            className={`btn ${selectedCategory === "BOL" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${selectedCategory === "BOL" ? "btn-dark" : "btn-outline-dark"} me-2`}
             onClick={() => handleCategorySelect("BOL")}
           >
             Bollywood
           </button>
           <button
-            className={`btn ${selectedCategory === "SPO" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${selectedCategory === "SPO" ? "btn-dark" : "btn-outline-dark"} me-2`}
             onClick={() => handleCategorySelect("SPO")}
           >
             Sports
           </button>
           <button
-            className={`btn ${selectedCategory === "TEC" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${selectedCategory === "TEC" ? "btn-dark" : "btn-outline-dark"} me-2`}
             onClick={() => handleCategorySelect("TEC")}
           >
             Technology
           </button>
           <button
-            className={`btn ${selectedCategory === "OTR" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${selectedCategory === "OTR" ? "btn-dark" : "btn-outline-dark"} me-2`}
             onClick={() => handleCategorySelect("OTR")}
           >
             Others
@@ -137,7 +143,7 @@ const SearchResults = () => {
             <Search />
           </span>
         </div>
-      </div>
+      </div> 
 
       {/* Toggle between posts and users */}
       <div className="btn-group mb-4">
@@ -174,8 +180,8 @@ const SearchResults = () => {
             {users.length > 0 ? (
               users.map((user) => (
                 <div className="card mb-3" style={{ maxWidth: "540px" }} key={user.id}>
-                  <div className="row g-0">
-                    <div className="col-md-4">
+                  <div className="row g-0" >
+                    <div className="col-md-4" >
                       <img
                         src={user.profile_photo || "default_profile.jpeg"}
                         className="img-fluid rounded-start"

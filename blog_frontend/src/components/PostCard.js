@@ -93,7 +93,7 @@ const PostCard = ({ post, currentUser,onDelete }) => {
         >
           <div className="d-flex align-items-center m-1" onClick={handleCreaterProfile} style={{ cursor: "pointer" }}>
             <Image
-              src={creator?.profile_photo || "default_profile.jpeg"}
+              src={creator?.profile_photo || "/default_profile.jpeg"}
               roundedCircle
               className="img-fluid me-2"
               alt="User Avatar"

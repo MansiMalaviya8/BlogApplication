@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Image, Form, Spinner, Alert } from "react-bootstrap";
-import { Pencil } from "lucide-react";
+import { Edit } from "lucide-react";
 import { fetchUser, fetchFollowCounts, editProfile } from '../services/AuthAPI'; // Adjust the path as necessary
 import { deletePost, fetchPosts } from "../services/PostAPI";
 import PostCard from "./PostCard";
@@ -111,14 +111,16 @@ const Profile = () => {
   }
 
   return (
-    <Container className="mt-5">
-      <Row className="align-items-center">
+    <div>
+    <Container style={{ marginTop: "75px" }}>
+      <Row className="align-items-center ">
         <Col xs={4} md={3} className="position-relative">
           <Image
             src={user.profile_photo || "default_profile.jpeg"}
             roundedCircle
             className="img-fluid"
             alt="User Avatar"
+            // style={{ width: "150px", height: "150px", objectFit: "cover" }}
           />
           <Form.Control
             type="file"
@@ -127,7 +129,7 @@ const Profile = () => {
             className="d-none"
             id="profilePhotoInput"
           />
-          <Pencil
+          <Edit
             size={24}
             className="position-absolute"
             style={{ top: "75%", right: "10%" }}
@@ -205,6 +207,7 @@ const Profile = () => {
         </div>
       </div>
     </Container>
+    </div>
   );
 };
 

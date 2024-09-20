@@ -104,13 +104,14 @@ const User = () => {
   }
 
   return (
-    <Container className="mt-5">
+    <div>
+    <Container style={{ marginTop: "75px" }}>
       <Row className="align-items-center">
         <Col xs={4} md={3} className="position-relative">
           <Image
-            src={profile.profile_photo || "default_profile.jpeg"}
+            src={profile.profile_photo || "/default_profile.jpeg"}
             roundedCircle
-            className="img-fluid"
+            className="w-100 h-100"
             alt="User Avatar"
           />
           
@@ -186,6 +187,7 @@ const User = () => {
         </div>
       </div>
     </Container>
+    </div>
   );
 };
 

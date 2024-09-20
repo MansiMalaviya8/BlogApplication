@@ -43,7 +43,7 @@ const Posts = () => {
   }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 3;
+  const postsPerPage = 6;
 
   // Calculate total number of pages
   const totalPages = Math.ceil(posts.length / postsPerPage);
@@ -68,10 +68,10 @@ const Posts = () => {
     <div>
       <Carousel style={{ marginTop: "75px" }}>
       <Carousel.Item onClick={() => handleSelect("POL")}>
-        <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
           <img
             className="d-block w-75"
-            src="/passion.jpg"
+            src="/Politics_carousel_1.jpeg"
             alt="Politics"
             style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
           />
@@ -83,10 +83,10 @@ const Posts = () => {
       </Carousel.Item>
 
       <Carousel.Item onClick={() => handleSelect("SPO")}>
-        <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
           <img
             className="d-block w-75"
-            src="/food.jpg"
+            src="/Sports_carousel.jpg"
             alt="Sports"
             style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
           />
@@ -98,10 +98,10 @@ const Posts = () => {
       </Carousel.Item>
 
       <Carousel.Item onClick={() => handleSelect("ENT")}>
-        <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
           <img
             className="d-block w-75"
-            src="/travel.jpg"
+            src="/Bollywood_carousel.jpg"
             alt="Entertainment"
             style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
           />
@@ -112,11 +112,11 @@ const Posts = () => {
         </Carousel.Caption>
       </Carousel.Item>
 
-      <Carousel.Item onClick={() => handleSelect("OTR")}>
-        <div className="d-flex justify-content-center align-items-center" style={{ height: '300px' }}>
+      <Carousel.Item onClick={() => handleSelect("TEC")}>
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
           <img
             className="d-block w-75"
-            src="/news.jpg"
+            src="/Technology_carousel.jpeg"
             alt="Technology"
             style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover' }}
           />
