@@ -22,7 +22,6 @@ const Signup = () => {
             return;
         }
         try {
-            
                 const result = await register(username, email, password);
                 setMessage(result.message || 'Registration successful');
                 navigate('/');
