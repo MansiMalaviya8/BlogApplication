@@ -22,7 +22,7 @@ const SearchResults = () => {
 
       setSearchKeywords(searchTerm === "")
       const { posts: searchPostsData, users: searchUsers } = await searchPosts(searchTerm);
-
+      console.log(selectedCategory)
       const filteredPosts =
         selectedCategory === "All"
           ? searchPostsData
@@ -38,17 +38,16 @@ const SearchResults = () => {
 
   const handleCategorySelect = async (category) => {
     console.log("ry",category)
-    await setSelectedCategory(category);
+    setSelectedCategory(category);
     if (searchTerm === "") {
       const { posts: searchPostsData, users: searchUsers } = await searchPosts(category);
 
-      console.log(searchPostsData);
-      console.log(selectedCategory)
-      // const filteredPosts =
-      //   category === "All"
-      //     ? searchPostsData
-      //     : searchPostsData.filter((post) => (post.category === category)&&(post.created_by!==user.id));
-          // console.log(filteredPosts);
+      
+      const filteredPosts =
+        category === "All"
+          ? searchPostsData
+          : searchPostsData.filter((post) => (post.category === category)&&(post.created_by!==user.id));
+          console.log(filteredPosts);
 
       setPosts(searchPostsData);
       setUsers(searchUsers);
@@ -57,7 +56,7 @@ const SearchResults = () => {
     }
   };
 
-  const handleCreaterProfile=(id)=>{
+  const handleOnClick=(id)=>{
     navigate(`/users/${id}`);
 
   }
@@ -70,7 +69,7 @@ const SearchResults = () => {
   useEffect(() => {
     
     if (categoryFromQuery) {
-      setSelectedCategory(categoryFromQuery);
+      // setSelectedCategory(categoryFromQuery);
       handleCategorySelect(categoryFromQuery);
       navigate("/search")
     }
@@ -82,7 +81,7 @@ const SearchResults = () => {
 
       handleSearch();
     }
-  }, [searchTerm]);
+  }, [selectedCategory]);
 
   return (
     <div className="container" style={{ marginTop: "5rem" }}>
@@ -140,7 +139,9 @@ const SearchResults = () => {
             placeholder="Search..."
           />
           <span className="input-group-text">
-            <Search />
+            <div style={{ cursor: 'pointer' }} onClick={() => handleSearch()}>
+              <Search />
+            </div>
           </span>
         </div>
       </div> 
@@ -179,7 +180,7 @@ const SearchResults = () => {
           <div className="col-12">
             {users.length > 0 ? (
               users.map((user) => (
-                <div className="card mb-3" style={{ maxWidth: "540px" }} key={user.id}>
+                <div className="card mb-3" style={{ maxWidth: "540px", cursor:"pointer" }} onClick={() => handleOnClick(user.id)} key={user.id}>
                   <div className="row g-0" >
                     <div className="col-md-4" >
                       <img
