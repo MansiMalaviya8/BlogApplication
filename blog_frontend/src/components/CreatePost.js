@@ -86,8 +86,8 @@ const CreatePost = () => {
                     <Form onSubmit={handleSubmit} encType="multipart/form-data">
                         {/* First line: Title */}
                         <Form.Group as={Row} className="mb-4" controlId="title">
-                            <Form.Label column md={2} className="fs-5">
-                                Title:
+                            <Form.Label column md={2} className="fs-5 ">
+                                <p className='ms-5'>Title:</p>
                             </Form.Label>
                             <Col md={10}>
                                 <Form.Control
@@ -105,7 +105,7 @@ const CreatePost = () => {
                         {/* Second line: Content */}
                         <Form.Group as={Row} className="mb-4" controlId="content">
                             <Form.Label column md={2} className="fs-5">
-                                Content:
+                            <p className='ms-5'>Content:</p>
                             </Form.Label>
                             <Col md={10}>
                                 <Form.Control
@@ -126,7 +126,7 @@ const CreatePost = () => {
                             <Col md={6}>
                                 <Form.Group as={Row} controlId="category">
                                     <Form.Label column md={4} className="fs-5">
-                                        Category:
+                                    <p className='ms-5'>Category:</p>
                                     </Form.Label>
                                     <Col md={8}>
                                         <Form.Control
