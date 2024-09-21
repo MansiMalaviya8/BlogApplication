@@ -16,20 +16,51 @@ const Signup = () => {
     const navigate = useNavigate();
 
     
+    // const handleRegister = async () => {
+    //     if (password !== confirmPassword) {
+    //         setMessage('Passwords do not match');
+    //         return;
+    //     }
+    //     try {
+    //             const result = await register(username, email, password);
+    //             setMessage(result.message || 'Registration successful');
+    //             navigate('/');
+            
+    //     } catch (error) {
+    //         setMessage(error.message);
+    //     }
+    // };
+
     const handleRegister = async () => {
+        // Email validation regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+        // Password validation for at least 8 characters
+        if (password.length < 8) {
+            setMessage('Password must be at least 8 characters long');
+            return;
+        }
+    
+        // Email format validation
+        if (!emailRegex.test(email)) {
+            setMessage('Please enter a valid email address');
+            return;
+        }
+    
         if (password !== confirmPassword) {
             setMessage('Passwords do not match');
             return;
         }
+    
         try {
-                const result = await register(username, email, password);
-                setMessage(result.message || 'Registration successful');
-                navigate('/');
-            
+            const result = await register(username, email, password);
+            setMessage(result.message || 'Registration successful');
+            navigate('/');
         } catch (error) {
             setMessage(error.message);
         }
     };
+    
     
     useEffect(() => {
         // Check if user is already logged in
@@ -102,7 +133,7 @@ const Signup = () => {
                         />
                     </div>
                     <button type="button" className="btn btn-dark w-100" onClick={handleRegister}>Register</button>
-                    {message && <p className="mt-3 text-center text-primary">{message}</p>}
+                    {message && <p className="mt-3 text-center text-danger">{message}</p>}
                 </form>
                 <p className="text-center mt-3">
                     Already signed up? <Link to="/login">Sign in here</Link>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Image, Spinner, Alert } from "react-bootstrap";
+import { Container, Row, Col, Image, Spinner, Alert,Card } from "react-bootstrap";
 import {
   fetchUser,
   fetchFollowCounts,
@@ -152,6 +152,7 @@ const User = () => {
   return (
     <div>
       <Container style={{ marginTop: "75px" }}>
+        <Card className="shadow">
         <Row className="align-items-center">
           <Col xs={4} md={3} className="position-relative">
             <Image
@@ -178,11 +179,13 @@ const User = () => {
               {userId !== user.id && (isFollowing ? "Following" : "Follow")}
               </button>
           </Col>
+          
         </Row>
+        </Card>
         {/* You can uncomment and adjust the following to display posts */}
         <Row className="mt-4">
           <Col xs={12}>
-            <h5>Posts</h5>
+            <h5 className="mb-5 mt-3">Posts</h5>
             {posts.length === 0 ? (
               <p>No posts available.</p>
             ) : (

@@ -130,7 +130,7 @@ const Posts = () => {
 
       {loading && <p>Loading...</p>}
 
-      <h1>Posts</h1>
+      <h1 className="mb-5  mt-3">Enjoy Blogging..</h1>
       <div className="posts-list row row-cols-1 row-cols-md-4 g-4">
         {/* Render current posts */}
         {currentPosts.map((post) => (
